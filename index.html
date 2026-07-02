@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>AquaForca</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+
+    <!-- Fundo com bolhas -->
+
+    <div class="bubbles-container"></div>
+
+
+
+    <!-- Tela Inicial -->
+
+    <div id="tela-inicial" class="tela-inicial active">
+
+        <div class="container glass" style="max-width:600px; text-align:center; padding:40px 30px;">
+
+            <h1 style="font-family:'Fredoka One',cursive; font-size:3rem; color:#fff; text-shadow:0 4px 12px rgba(0,0,0,0.3);">
+
+                AquaForca
+
+            </h1>
+
+            <p style="font-size:1.3rem; color:#fff; margin:10px 0 20px;">
+
+                Ciência aquática em cada letra!
+
+            </p>
+
+            <div style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center; margin:20px 0;">
+
+                <button id="btn-iniciar" class="btn-primario" style="font-size:1.6rem; padding:18px 50px;">▶ Jogar</button>
+
+            </div>
+
+            <div style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center; margin-top:10px;">
+
+                <button id="btn-instrucoes" class="btn-secundario" style="font-size:1.2rem; padding:12px 30px;">Instruções</button>
+
+                <button id="btn-ranking-inicial" class="btn-secundario">Conquistas</button>
+
+                <button id="btn-estatisticas-inicial" class="btn-secundario">Estatísticas</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Tela do Jogo -->
+
+    <div id="tela-jogo" class="tela-jogo" style="display:none;">
+
+        <div class="container glass">
+
+            <!-- Header com moedas, nível, erros e botões -->
+
+            <header class="game-header">
+
+                <div class="header-esquerda">
+
+                    <div class="moedas-display">
+
+                        <span>💰</span>
+
+                        <span id="moedas-contador">0</span>
+
+                    </div>
+
+                    <div class="nivel-display">
+
+                        <span>Nível <span id="nivel-atual">1</span></span>
+
+                    </div>
+
+                </div>
+
+                <div class="header-centro">
+
+                    <!-- Indicador de erros permitidos -->
+
+                    <div class="erros-display" id="erros-display">
+
+                        <span>❌</span>
+
+                        <span id="erros-contador">3</span>
+
+                    </div>
+
+                </div>
+
+                <div class="header-buttons">
+
+                    <button id="btn-loja-header" class="header-btn" title="Loja">🏪</button>
+
+                    <button id="btn-voltar-inicio" class="header-btn" title="Início">🏠</button>
+
+                </div>
+
+            </header>
+
+
+
+            <!-- Dica -->
+
+            <div id="dica-area" class="glass-light">
+
+                <span id="dica-label">Dica:</span>
+
+                <span id="dica-texto"></span>
+
+            </div>
+
+
+
+            <main id="game-area">
+
+                <!-- Slots -->
+
+                <div id="slots-container"></div>
+
+
+
+                <!-- Vidas -->
+
+                <div id="vidas-container"></div>
+
+
+
+                <!-- Combo flutuante -->
+
+                <div id="combo-flutuante" class="combo-flutuante"></div>
+
+
+
+                <!-- Alfabeto -->
+
+                <div id="alfabeto-container"></div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL de fim de jogo -->
+
+    <div id="modal-overlay" class="modal-overlay">
+
+        <div class="modal-content glass">
+
+            <p id="modal-mensagem"></p>
+
+            <div id="modal-moedas-ganhas" style="font-size:1.5rem; color:#ffd700; margin:10px 0;"></div>
+
+            <button id="modal-jogar-novamente">Jogar Novamente</button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL de Instruções -->
+
+    <div id="instrucoes-overlay" class="modal-overlay">
+
+        <div class="modal-content glass" style="max-width:550px; text-align:left;">
+
+            <h2 style="color:#fff; font-family:'Fredoka One',cursive; text-align:center;">Como jogar?</h2>
+
+            <div style="color:#fff; font-size:1.1rem; line-height:1.7; padding:5px 0;">
+
+                <p><strong>Objetivo:</strong> Descobrir a palavra secreta sobre ciência aquática.</p>
+
+                <p><strong>Progressão:</strong></p>
+
+                <ul style="padding-left:20px; list-style-type:'• ';">
+
+                    <li>Para avançar de nível, você precisa <strong>acertar todas</strong> as palavras do nível atual.</li>
+
+                </ul>
+
+                <p><strong>Erros permitidos:</strong></p>
+
+                <ul style="padding-left:20px; list-style-type:'• ';">
+
+                    <li>Você tem direito a <strong>3 erros</strong> por nível.</li>
+
+                    <li>Se perder uma palavra (esgotar as vidas), um erro é contado.</li>
+
+                    <li>Ao atingir 0 erros restantes, o jogo acaba e você <strong>recomeça do nível 1</strong>.</li>
+
+                </ul>
+
+                <p>Use a dica para ajudar, compre vidas extras ou revele letras na loja com as moedas ganhas.</p>
+
+            </div>
+
+            <button id="fechar-instrucoes" class="fechar-modal-btn" style="display:block; margin:20px auto 0;">Entendi!</button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL da Loja -->
+
+    <div id="loja-overlay" class="modal-overlay">
+
+        <div class="modal-content glass" style="max-width:500px;">
+
+            <h2 style="color:#fff; font-family:'Fredoka One',cursive;">🏪 Loja</h2>
+
+            <div id="loja-itens">
+
+                <div class="loja-item" data-item="vida">
+
+                    <span>❤️ Vida extra</span>
+
+                    <span>100 moedas</span>
+
+                    <button class="comprar-btn">Comprar</button>
+
+                </div>
+
+                <div class="loja-item" data-item="revelar">
+
+                    <span>⭐ Revelar letra</span>
+
+                    <span>80 moedas</span>
+
+                    <button class="comprar-btn">Comprar</button>
+
+                </div>
+
+            </div>
+
+            <button id="fechar-loja" class="fechar-modal-btn">Fechar</button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL de Estatísticas -->
+
+    <div id="estatisticas-overlay" class="modal-overlay">
+
+        <div class="modal-content glass" style="max-width:500px;">
+
+            <h2 style="color:#fff; font-family:'Fredoka One',cursive;">📊 Estatísticas</h2>
+
+            <div id="estatisticas-conteudo"></div>
+
+            <button id="fechar-estatisticas" class="fechar-modal-btn">Fechar</button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- MODAL de Conquistas -->
+
+    <div id="ranking-overlay" class="modal-overlay">
+
+        <div class="modal-content glass" style="max-width:500px;">
+
+            <h2 style="color:#fff; font-family:'Fredoka One',cursive;">🏆 Conquistas</h2>
+
+            <div id="ranking-conteudo"></div>
+
+            <button id="fechar-ranking" class="fechar-modal-btn">Fechar</button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- NOTIFICAÇÃO de conquista -->
+
+    <div id="notificacao-conquista" class="notificacao-conquista">
+
+        <span id="notificacao-texto"></span>
+
+    </div>
+
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
