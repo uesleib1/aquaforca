@@ -126,18 +126,18 @@ const btnVoltarInicio = document.getElementById("btn-voltar-inicio");
 const telaInicial = document.getElementById("tela-inicial");
 const telaJogo = document.getElementById("tela-jogo");
 const btnIniciar = document.getElementById("btn-iniciar");
-const btnInstrucoes = document.getElementById("btn-instrucoes"); // NOVO
+const btnInstrucoes = document.getElementById("btn-instrucoes");
 const btnRankingInicial = document.getElementById("btn-ranking-inicial");
 const btnEstatisticasInicial = document.getElementById("btn-estatisticas-inicial");
 
 const lojaOverlay = document.getElementById("loja-overlay");
 const estatisticasOverlay = document.getElementById("estatisticas-overlay");
 const rankingOverlay = document.getElementById("ranking-overlay");
-const instrucoesOverlay = document.getElementById("instrucoes-overlay"); // NOVO
+const instrucoesOverlay = document.getElementById("instrucoes-overlay");
 const fecharLoja = document.getElementById("fechar-loja");
 const fecharEstatisticas = document.getElementById("fechar-estatisticas");
 const fecharRanking = document.getElementById("fechar-ranking");
-const fecharInstrucoes = document.getElementById("fechar-instrucoes"); // NOVO
+const fecharInstrucoes = document.getElementById("fechar-instrucoes");
 const lojaItens = document.getElementById("loja-itens");
 const estatisticasConteudo = document.getElementById("estatisticas-conteudo");
 const rankingConteudo = document.getElementById("ranking-conteudo");
@@ -413,6 +413,12 @@ function atualizarNivelUI() {
 }
 function atualizarErrosUI() {
     errosContador.textContent = estado.errosPermitidos;
+    const display = document.getElementById("erros-display");
+    if (estado.errosPermitidos <= 1) {
+        display.classList.add("critico");
+    } else {
+        display.classList.remove("critico");
+    }
 }
 
 // ============================================================
@@ -481,7 +487,6 @@ function tratarCliqueLetra(letra, btnElement) {
             }
             estado.totalAcertos++;
             estado.totalPalavrasResolvidas++;
-            // NÃO resetamos errosPermitidos aqui (permanecem para o nível)
 
             const nivel = niveis[estado.nivelAtual];
             const idxPalavra = nivel.palavras.findIndex(p => p.palavra === palavra);
