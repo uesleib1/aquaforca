@@ -871,10 +871,11 @@ body {
         height: clamp(56px, 18vw, 68px);
         font-size: clamp(1.6rem, 6vw, 2.2rem);
     }
+    /* Botões do alfabeto maiores em mobile */
     .letra-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 0.85rem;
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
     }
     #vidas-container {
         font-size: 1.6rem;
@@ -925,10 +926,11 @@ body {
         font-size: clamp(1.4rem, 7vw, 1.8rem);
         border-radius: 12px;
     }
+    /* Botões do alfabeto ainda maiores em telas muito pequenas */
     .letra-btn {
-        width: 30px;
-        height: 30px;
-        font-size: 0.7rem;
+        width: 44px;
+        height: 44px;
+        font-size: 1.1rem;
         border-radius: 50%;
     }
     #vidas-container {
@@ -936,5 +938,60 @@ body {
     }
     .tela-inicial .container {
         padding: 24px 16px;
+    }
+}
+
+/* Telas muito pequenas (ex: iPhone SE, Galaxy S5, etc.) */
+@media (max-width: 380px) {
+    .container {
+        padding: 12px 8px 16px;
+        border-radius: 24px;
+    }
+    .hud-card {
+        width: clamp(46px, 18vw, 56px);
+        height: clamp(52px, 20vw, 62px);
+        border-radius: 14px;
+        padding: 4px 2px 2px;
+    }
+    .hud-card__icon {
+        font-size: 0.9rem;
+    }
+    .hud-card__value {
+        font-size: 1.0rem;
+    }
+    .hud-card__label {
+        font-size: 0.35rem;
+    }
+    .hud-btn {
+        width: 32px;
+        height: 32px;
+    }
+    .slot {
+        width: clamp(32px, 14vw, 40px);
+        height: clamp(42px, 18vw, 50px);
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
+        border-radius: 10px;
+    }
+    /* Botões ainda maiores para toque preciso em telas minúsculas */
+    .letra-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+        border-radius: 50%;
+    }
+    #vidas-container {
+        font-size: 1.2rem;
+        gap: 4px;
+    }
+    #dica-area {
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+    .modal-content {
+        padding: 20px 12px;
+        border-radius: 24px;
+    }
+    .tela-inicial .container {
+        padding: 20px 12px;
     }
 }
