@@ -210,24 +210,8 @@ function tocarSom(caminho) {
 }
 
 // ============================================================
-// 7. GERAR BOLHAS (JS)
+// 7. BOLHAS REMOVIDAS – não há mais função de geração
 // ============================================================
-function gerarBolhas() {
-    const container = document.querySelector('.bubbles-container');
-    const count = window.innerWidth < 480 ? 10 : 20;
-    for (let i = 0; i < count; i++) {
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        const size = 15 + Math.random() * 45;
-        bubble.style.width = size + 'px';
-        bubble.style.height = size + 'px';
-        bubble.style.left = Math.random() * 100 + '%';
-        bubble.style.animationDuration = 10 + Math.random() * 20 + 's';
-        bubble.style.animationDelay = Math.random() * 15 + 's';
-        container.appendChild(bubble);
-    }
-}
-gerarBolhas();
 
 // ============================================================
 // 8. TELA INICIAL / JOGO
