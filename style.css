@@ -70,6 +70,15 @@ body {
     border: 1px solid rgba(255,255,255,0.6);
 }
 
+/* ===== FALLBACK PARA BACKDROP-FILTER ===== */
+@supports not (backdrop-filter: blur(1px)) {
+    .glass, .glass-light, .hud-card, .modal-content, .btn-secundario {
+        background: rgba(255, 255, 255, 0.6) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
 /* ===== TELA INICIAL ===== */
 .tela-inicial {
     position: fixed;
@@ -135,7 +144,7 @@ body {
 }
 
 /* ============================================================= */
-/*  🔥 NOVO HUD - BARRA SUPERIOR UNIFICADA                        */
+/*  HUD - versão otimizada para mobile                            */
 /* ============================================================= */
 
 .game-header {
@@ -148,447 +157,150 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(6px, 1.5vw, 12px);
+    gap: 8px;
     flex-wrap: wrap;
     padding: 2px 0;
 }
 
-/* ===== CARDS DO HUD ===== */
 .hud-card {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: clamp(62px, 16vw, 82px);
-    height: clamp(78px, 20vw, 100px);
+    width: clamp(74px, 20vw, 96px);
+    height: clamp(82px, 22vw, 104px);
     border-radius: 20px;
     padding: 8px 6px 6px;
-    cursor: default;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.3s ease;
-    overflow: hidden;
-    background: rgba(10, 40, 60, 0.45);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(10, 40, 60, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1.5px solid rgba(255, 255, 255, 0.3);
-    box-shadow:
-        0 4px 16px rgba(0, 0, 0, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.25),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    transition: transform 0.2s ease;
 }
 
 .hud-card:hover {
-    transform: translateY(-4px) scale(1.04);
-    box-shadow:
-        0 10px 28px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.35),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
 }
 
 .hud-card:active {
-    transform: translateY(2px) scale(0.96);
-    box-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.25),
-        inset 0 -1px 4px rgba(0, 0, 0, 0.15);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    transform: scale(0.96);
 }
 
-/* ===== EFEITO SHINE ===== */
-.hud-card__shine {
-    position: absolute;
-    top: -60%;
-    left: -60%;
-    width: 60%;
-    height: 220%;
-    background: linear-gradient(
-        105deg,
-        transparent 35%,
-        rgba(255, 255, 255, 0.25) 42%,
-        rgba(255, 255, 255, 0.45) 45%,
-        rgba(255, 255, 255, 0.25) 48%,
-        transparent 55%
-    );
-    transform: rotate(30deg);
-    animation: hudShine 4.5s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 2;
-}
-
-@keyframes hudShine {
-    0%   { left: -60%; opacity: 0; }
-    8%   { opacity: 1; }
-    40%  { left: 120%; opacity: 1; }
-    48%  { opacity: 0; }
-    100% { left: 120%; opacity: 0; }
-}
-
-/* ===== ÍCONE DO CARD ===== */
 .hud-card__icon {
-    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    font-size: clamp(1.3rem, 4.5vw, 1.8rem);
     line-height: 1;
     margin-bottom: 2px;
-    z-index: 3;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
-    transition: transform 0.3s ease;
 }
 
-.hud-card:hover .hud-card__icon {
-    transform: scale(1.15);
-}
-
-/* ===== VALOR (número grande) ===== */
 .hud-card__value {
     font-family: 'Fredoka One', cursive;
-    font-size: clamp(1.4rem, 5vw, 1.9rem);
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
     font-weight: 900;
     line-height: 1;
-    z-index: 3;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: #fff;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
-.hud-card:hover .hud-card__value {
-    transform: scale(1.08);
-}
-
-/* ===== LABEL (texto pequeno) ===== */
 .hud-card__label {
-    font-size: clamp(0.5rem, 1.8vw, 0.6rem);
+    font-size: clamp(0.55rem, 2vw, 0.7rem);
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    opacity: 0.8;
-    z-index: 3;
+    opacity: 0.85;
     margin-top: 1px;
-    transition: opacity 0.3s ease;
+    color: #fff;
 }
 
-.hud-card:hover .hud-card__label {
-    opacity: 1;
-}
-
-/* ============================================ */
-/*  VARIANTE DOURADA - MOEDAS                   */
-/* ============================================ */
+/* Variantes com cores sólidas */
 .hud-card--gold {
-    background: linear-gradient(
-        180deg,
-        rgba(180, 130, 20, 0.75) 0%,
-        rgba(160, 110, 10, 0.7) 40%,
-        rgba(120, 80, 5, 0.6) 100%
-    );
-    border-color: rgba(255, 215, 0, 0.6);
-    box-shadow:
-        0 4px 20px rgba(180, 120, 20, 0.4),
-        0 0 30px rgba(255, 200, 40, 0.2),
-        inset 0 1px 0 rgba(255, 255, 200, 0.5),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(180deg, #e6b800, #cc9900);
+    border-color: #ffd700;
+    box-shadow: 0 4px 16px rgba(180, 120, 20, 0.4);
 }
-
 .hud-card--gold .hud-card__value {
-    color: #fff;
-    text-shadow:
-        0 0 14px rgba(255, 200, 50, 0.9),
-        0 2px 6px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 14px rgba(255, 200, 50, 0.8);
 }
 
-.hud-card--gold .hud-card__label {
-    color: #ffe9a0;
-}
-
-.hud-card--gold:hover {
-    box-shadow:
-        0 10px 32px rgba(180, 120, 20, 0.5),
-        0 0 50px rgba(255, 200, 40, 0.35),
-        inset 0 1px 0 rgba(255, 255, 200, 0.6),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
-}
-
-/* Brilho extra nas moedas */
-.hud-card--gold::after {
-    content: '';
-    position: absolute;
-    top: 8%;
-    left: 15%;
-    width: 30%;
-    height: 20%;
-    background: radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, transparent 70%);
-    border-radius: 50%;
-    z-index: 1;
-    pointer-events: none;
-    animation: goldSparkle 3s ease-in-out infinite;
-}
-
-@keyframes goldSparkle {
-    0%, 100% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 0.9; transform: scale(1.3); }
-}
-
-/* ============================================ */
-/*  VARIANTE AZUL - NÍVEL                       */
-/* ============================================ */
 .hud-card--blue {
-    background: linear-gradient(
-        180deg,
-        rgba(0, 100, 160, 0.75) 0%,
-        rgba(0, 80, 140, 0.7) 40%,
-        rgba(0, 50, 100, 0.6) 100%
-    );
-    border-color: rgba(100, 200, 255, 0.55);
-    box-shadow:
-        0 4px 20px rgba(0, 120, 180, 0.35),
-        0 0 30px rgba(0, 160, 220, 0.15),
-        inset 0 1px 0 rgba(200, 240, 255, 0.45),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(180deg, #0088bb, #006699);
+    border-color: #66ccff;
 }
-
 .hud-card--blue .hud-card__value {
-    color: #fff;
-    text-shadow:
-        0 0 14px rgba(100, 210, 255, 0.9),
-        0 2px 6px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 14px rgba(100, 210, 255, 0.8);
 }
 
-.hud-card--blue .hud-card__label {
-    color: #b8e8ff;
-}
-
-.hud-card--blue:hover {
-    box-shadow:
-        0 10px 32px rgba(0, 120, 180, 0.5),
-        0 0 50px rgba(0, 160, 220, 0.35),
-        inset 0 1px 0 rgba(200, 240, 255, 0.55),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
-}
-
-/* ============================================ */
-/*  VARIANTE SEGURA (VERDE) - ERROS             */
-/* ============================================ */
 .hud-card--safe {
-    background: linear-gradient(
-        180deg,
-        rgba(30, 120, 70, 0.75) 0%,
-        rgba(20, 100, 55, 0.7) 40%,
-        rgba(10, 70, 35, 0.6) 100%
-    );
-    border-color: rgba(80, 200, 130, 0.55);
-    box-shadow:
-        0 4px 20px rgba(30, 140, 70, 0.35),
-        0 0 30px rgba(40, 180, 100, 0.15),
-        inset 0 1px 0 rgba(200, 255, 220, 0.45),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
-    transition: background 0.5s ease,
-                border-color 0.5s ease,
-                box-shadow 0.5s ease,
-                transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: linear-gradient(180deg, #2b8c5e, #1a6b44);
+    border-color: #66d699;
 }
-
 .hud-card--safe .hud-card__value {
-    color: #fff;
-    text-shadow:
-        0 0 14px rgba(80, 220, 140, 0.9),
-        0 2px 6px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 14px rgba(80, 220, 140, 0.8);
 }
 
-.hud-card--safe .hud-card__label {
-    color: #b8f0d0;
-}
-
-.hud-card--safe:hover {
-    box-shadow:
-        0 10px 32px rgba(30, 140, 70, 0.5),
-        0 0 50px rgba(40, 180, 100, 0.35),
-        inset 0 1px 0 rgba(200, 255, 220, 0.55),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
-}
-
-/* ============================================ */
-/*  ESTADO CRÍTICO (VERMELHO) - ERROS           */
-/* ============================================ */
 .hud-card.critico {
-    background: linear-gradient(
-        180deg,
-        rgba(200, 30, 40, 0.85) 0%,
-        rgba(170, 20, 30, 0.8) 40%,
-        rgba(130, 10, 20, 0.7) 100%
-    ) !important;
-    border-color: rgba(255, 120, 130, 0.7) !important;
-    box-shadow:
-        0 4px 22px rgba(220, 40, 50, 0.5),
-        0 0 40px rgba(255, 60, 70, 0.3),
-        inset 0 1px 0 rgba(255, 200, 200, 0.5),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.3) !important;
+    background: linear-gradient(180deg, #cc3333, #991111) !important;
+    border-color: #ff6666 !important;
     animation: pulseCritico 0.9s ease-in-out infinite;
 }
 
-.hud-card.critico .hud-card__value {
-    text-shadow:
-        0 0 18px rgba(255, 100, 110, 1),
-        0 2px 6px rgba(0, 0, 0, 0.6);
-}
-
-.hud-card.critico .hud-card__label {
-    color: #ffc8cc;
-}
-
-.hud-card.critico .hud-card__icon {
-    animation: shakeIcon 0.6s ease-in-out infinite;
-}
-
 @keyframes pulseCritico {
-    0%, 100% {
-        box-shadow:
-            0 4px 22px rgba(220, 40, 50, 0.5),
-            0 0 40px rgba(255, 60, 70, 0.3),
-            inset 0 1px 0 rgba(255, 200, 200, 0.5),
-            inset 0 -2px 6px rgba(0, 0, 0, 0.3);
-        transform: scale(1);
-    }
-    50% {
-        box-shadow:
-            0 6px 30px rgba(220, 40, 50, 0.7),
-            0 0 60px rgba(255, 60, 70, 0.5),
-            inset 0 1px 0 rgba(255, 200, 200, 0.6),
-            inset 0 -2px 6px rgba(0, 0, 0, 0.3);
-        transform: scale(1.04);
-    }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
-@keyframes shakeIcon {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-3px) rotate(-5deg); }
-    40% { transform: translateX(3px) rotate(5deg); }
-    60% { transform: translateX(-2px) rotate(-3deg); }
-    80% { transform: translateX(2px) rotate(3deg); }
-}
-
-/* ============================================ */
-/*  BOTÕES PREMIUM DO HUD                       */
-/* ============================================ */
+/* Botões do HUD */
 .hud-buttons {
     display: flex;
-    gap: clamp(6px, 1.5vw, 10px);
+    gap: 8px;
     align-items: center;
 }
 
 .hud-btn {
     position: relative;
-    width: clamp(40px, 10vw, 50px);
-    height: clamp(40px, 10vw, 50px);
+    width: clamp(44px, 12vw, 56px);
+    height: clamp(44px, 12vw, 56px);
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.4);
-    font-size: clamp(1.1rem, 3.5vw, 1.4rem);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.3s ease,
-                border-color 0.3s ease;
-    overflow: hidden;
-    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.2s ease;
     outline: none;
     color: #fff;
+    background: linear-gradient(135deg, #f9d423, #f7971e);
+    box-shadow: 0 4px 14px rgba(247, 151, 30, 0.4);
 }
-
-/* Botão dourado - Loja */
-.hud-btn--gold {
-    background: linear-gradient(135deg, #f9d423 0%, #f7971e 50%, #e67e00 100%);
-    box-shadow:
-        0 4px 14px rgba(247, 151, 30, 0.4),
-        0 0 20px rgba(255, 200, 40, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.hud-btn--gold::after {
-    content: '';
-    position: absolute;
-    top: 12%;
-    left: 18%;
-    width: 35%;
-    height: 25%;
-    background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.hud-btn--gold:hover {
-    transform: scale(1.18) rotate(-8deg);
-    box-shadow:
-        0 8px 28px rgba(247, 151, 30, 0.6),
-        0 0 40px rgba(255, 200, 40, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.45),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-    border-color: rgba(255, 255, 200, 0.7);
-}
-
-.hud-btn--gold:active {
-    transform: scale(0.88) rotate(-4deg);
-    box-shadow:
-        0 2px 8px rgba(247, 151, 30, 0.5),
-        inset 0 2px 6px rgba(0, 0, 0, 0.3),
-        inset 0 -1px 2px rgba(255, 255, 255, 0.2);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-/* Botão azul - Menu */
 .hud-btn--blue {
-    background: linear-gradient(135deg, #5bc0eb 0%, #0099cc 50%, #0077aa 100%);
-    box-shadow:
-        0 4px 14px rgba(0, 153, 204, 0.4),
-        0 0 20px rgba(80, 200, 240, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #5bc0eb, #0099cc);
+    box-shadow: 0 4px 14px rgba(0, 153, 204, 0.4);
 }
 
-.hud-btn--blue::after {
-    content: '';
-    position: absolute;
-    top: 12%;
-    left: 18%;
-    width: 35%;
-    height: 25%;
-    background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
+.hud-btn:hover {
+    transform: scale(1.08);
+}
+.hud-btn:active {
+    transform: scale(0.9);
 }
 
-.hud-btn--blue:hover {
-    transform: scale(1.18) rotate(8deg);
-    box-shadow:
-        0 8px 28px rgba(0, 153, 204, 0.6),
-        0 0 40px rgba(80, 200, 240, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.45),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-    border-color: rgba(200, 240, 255, 0.7);
-}
-
-.hud-btn--blue:active {
-    transform: scale(0.88) rotate(4deg);
-    box-shadow:
-        0 2px 8px rgba(0, 153, 204, 0.5),
-        inset 0 2px 6px rgba(0, 0, 0, 0.3),
-        inset 0 -1px 2px rgba(255, 255, 255, 0.2);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-/* SVG nos botões */
 .hud-btn svg {
     display: block;
-    transition: transform 0.3s ease;
+    width: 55%;
+    height: 55%;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
 }
 
-.hud-btn:hover svg {
-    transform: scale(1.1);
+.hud-btn--gold svg {
+    stroke: #fff;
 }
-
-.hud-btn:active svg {
-    transform: scale(0.9);
+.hud-btn--blue svg {
+    stroke: #fff;
 }
 
 /* ===== DICA ===== */
@@ -979,66 +691,29 @@ body {
     box-shadow: 0 4px 0 #cc7a1f;
 }
 
-/* ===== RESPONSIVIDADE ===== */
+/* ===== RESPONSIVIDADE FINA ===== */
 @media (max-width: 600px) {
     .hud-container {
         gap: 5px;
     }
     .hud-card {
-        width: clamp(50px, 18vw, 65px);
-        height: clamp(64px, 22vw, 80px);
-        border-radius: 16px;
-        padding: 6px 4px 4px;
-    }
-    .hud-card__icon {
-        font-size: clamp(0.9rem, 3.5vw, 1.1rem);
-    }
-    .hud-card__value {
-        font-size: clamp(1.1rem, 4.5vw, 1.4rem);
-    }
-    .hud-card__label {
-        font-size: clamp(0.4rem, 1.5vw, 0.5rem);
-        letter-spacing: 0.06em;
-    }
-    .hud-btn {
-        width: clamp(34px, 9vw, 40px);
-        height: clamp(34px, 9vw, 40px);
-        font-size: clamp(0.9rem, 3vw, 1.1rem);
-    }
-    .hud-buttons {
-        gap: 4px;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 12px 10px 16px;
-        border-radius: 28px;
-    }
-    .game-header {
-        padding-bottom: 8px;
-    }
-    .hud-container {
-        gap: 4px;
-    }
-    .hud-card {
-        width: clamp(44px, 17vw, 56px);
-        height: clamp(56px, 20vw, 70px);
+        width: clamp(60px, 20vw, 70px);
+        height: clamp(70px, 22vw, 80px);
+        padding: 4px 4px 2px;
         border-radius: 14px;
     }
     .hud-card__icon {
-        font-size: 0.8rem;
+        font-size: 1.1rem;
     }
     .hud-card__value {
-        font-size: 1rem;
+        font-size: 1.3rem;
     }
     .hud-card__label {
-        font-size: 0.4rem;
+        font-size: 0.5rem;
     }
     .hud-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 0.85rem;
+        width: 38px;
+        height: 38px;
     }
     .slot {
         width: 30px;
@@ -1066,36 +741,41 @@ body {
     }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 480px) {
+    .container {
+        padding: 12px 10px 16px;
+        border-radius: 28px;
+    }
+    .game-header {
+        padding-bottom: 8px;
+    }
     .hud-container {
-        gap: 3px;
+        gap: 4px;
     }
     .hud-card {
-        width: 40px;
-        height: 50px;
-        border-radius: 10px;
-        padding: 4px 3px 2px;
+        width: clamp(52px, 22vw, 62px);
+        height: clamp(60px, 24vw, 72px);
+        border-radius: 12px;
+        padding: 3px 3px 2px;
     }
     .hud-card__icon {
-        font-size: 0.7rem;
+        font-size: 0.9rem;
         margin-bottom: 0;
     }
     .hud-card__value {
-        font-size: 0.85rem;
+        font-size: 1.1rem;
     }
     .hud-card__label {
-        font-size: 0.35rem;
-        letter-spacing: 0.04em;
+        font-size: 0.4rem;
+        letter-spacing: 0.05em;
     }
     .hud-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 0.75rem;
-        border-width: 1.5px;
+        width: 34px;
+        height: 34px;
     }
     .slot {
         width: 26px;
-        height: 36px;
+        height: 38px;
         font-size: 1rem;
         border-radius: 8px;
     }
@@ -1109,4 +789,3 @@ body {
         font-size: 1.3rem;
     }
 }
-

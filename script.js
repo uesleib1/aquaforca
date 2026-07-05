@@ -86,7 +86,7 @@ let estado = {
     conquistasDesbloqueadas: new Set(),
     palavrasUsadasNivel: [],
     palavrasAcertadasNivel: [],
-    errosPermitidos: 3   // limite total de erros por nível
+    errosPermitidos: 3
 };
 
 // ============================================================
@@ -199,11 +199,12 @@ function salvarDados() {
 }
 
 // ============================================================
-// 6. SONS (opcional)
+// 6. SONS (opcional) - silencioso se não encontrar
 // ============================================================
 function tocarSom(caminho) {
     try {
         const audio = new Audio(caminho);
+        audio.volume = 0.5;
         audio.play().catch(() => {});
     } catch (e) {}
 }
@@ -213,7 +214,8 @@ function tocarSom(caminho) {
 // ============================================================
 function gerarBolhas() {
     const container = document.querySelector('.bubbles-container');
-    for (let i = 0; i < 20; i++) {
+    const count = window.innerWidth < 480 ? 10 : 20;
+    for (let i = 0; i < count; i++) {
         const bubble = document.createElement('div');
         bubble.className = 'bubble';
         const size = 15 + Math.random() * 45;
@@ -258,10 +260,8 @@ function iniciarJogo() {
     const acertadas = estado.palavrasAcertadasNivel[estado.nivelAtual] || [];
     const usadas = estado.palavrasUsadasNivel[estado.nivelAtual] || [];
 
-    // Verifica se o nível atual já foi concluído
     if (acertadas.length === totalPalavras) {
         if (estado.nivelAtual === niveis.length - 1) {
-            // VITÓRIA FINAL
             exibirModal(
                 "🎉 PARABÉNS! Você completou todos os níveis! 🎉",
                 "🏆 Você é um verdadeiro mestre das águas!",
@@ -273,7 +273,6 @@ function iniciarJogo() {
             );
             return;
         } else {
-            // Avança para o próximo nível
             estado.nivelAtual++;
             if (!estado.palavrasAcertadasNivel[estado.nivelAtual]) {
                 estado.palavrasAcertadasNivel[estado.nivelAtual] = [];
@@ -281,7 +280,7 @@ function iniciarJogo() {
             if (!estado.palavrasUsadasNivel[estado.nivelAtual]) {
                 estado.palavrasUsadasNivel[estado.nivelAtual] = [];
             }
-            estado.errosPermitidos = 3; // RESETA OS ERROS PERMITIDOS NO NOVO NÍVEL
+            estado.errosPermitidos = 3;
             atualizarNivelUI();
             atualizarErrosUI();
             salvarDados();
@@ -298,7 +297,6 @@ function iniciarJogo() {
         }
     }
 
-    // Verifica se há palavras disponíveis
     const disponiveis = [];
     for (let i = 0; i < totalPalavras; i++) {
         if (!usadas.includes(i)) {
@@ -307,7 +305,6 @@ function iniciarJogo() {
     }
 
     if (disponiveis.length === 0) {
-        // Não há mais palavras, mas o nível não foi concluído → derrota (recomeça)
         exibirModal(
             "😢 Você usou todas as palavras do nível sem acertar todas!",
             "Recomece do nível 1 e tente novamente.",
@@ -479,7 +476,6 @@ function tratarCliqueLetra(letra, btnElement) {
         renderizarSlots();
 
         if (estado.letrasDescobertas.every(v => v === true)) {
-            // PALAVRA COMPLETADA COM SUCESSO
             estado.jogoFinalizado = true;
             estado.combo++;
             if (estado.combo > estado.maiorSequencia) {
@@ -547,7 +543,6 @@ function tratarCliqueLetra(letra, btnElement) {
         renderizarVidas();
 
         if (estado.vidas === 0) {
-            // PERDEU A PALAVRA → decrementa os erros permitidos
             estado.errosPermitidos--;
             atualizarErrosUI();
             estado.jogoFinalizado = true;
@@ -561,7 +556,6 @@ function tratarCliqueLetra(letra, btnElement) {
             desabilitarTodasLetras();
 
             if (estado.errosPermitidos <= 0) {
-                // DERROTA FINAL (esgotou os erros)
                 exibirModal(
                     "💀 Você esgotou seus 3 erros permitidos!",
                     "Recomece do nível 1 para tentar novamente.",
@@ -572,7 +566,6 @@ function tratarCliqueLetra(letra, btnElement) {
                     }
                 );
             } else {
-                // Ainda tem erros permitidos
                 exibirModal(
                     `😢 Você perdeu! A palavra era: ${palavraRevelada}`,
                     `Erros restantes: ${estado.errosPermitidos}`,
@@ -599,7 +592,7 @@ function desabilitarTodasLetras() {
 }
 
 // ============================================================
-// 14. EXIBIR MODAL (dinâmico)
+// 14. EXIBIR MODAL
 // ============================================================
 let acaoModal = null;
 
@@ -637,7 +630,7 @@ function verificarConquistas() {
 }
 
 // ============================================================
-// 16. REINICIAR PROGRESSO (do nível 1)
+// 16. REINICIAR PROGRESSO
 // ============================================================
 function reiniciarProgressoCompleto() {
     estado.nivelAtual = 0;
