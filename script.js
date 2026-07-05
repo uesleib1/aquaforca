@@ -456,7 +456,7 @@ function mostrarToast(mensagem) {
 }
 
 // ============================================================
-// 13. LÓGICA DE CLIQUE EM LETRA
+// 13. LÓGICA DE CLIQUE EM LETRA (COM GANHO FIXO DE 25 MOEDAS)
 // ============================================================
 function tratarCliqueLetra(letra, btnElement) {
     if (estado.jogoFinalizado || estado.letrasClicadas.has(letra)) return;
@@ -494,13 +494,8 @@ function tratarCliqueLetra(letra, btnElement) {
                 estado.palavrasAcertadasNivel[estado.nivelAtual].push(idxPalavra);
             }
 
-            let moedasGanhas = 20;
-            if (estado.letrasClicadas.size === palavra.length) {
-                moedasGanhas += 30;
-            }
-            if (estado.combo >= 2) {
-                moedasGanhas += estado.combo * 5;
-            }
+            // GANHO FIXO DE 25 MOEDAS
+            const moedasGanhas = 25;
             estado.moedas += moedasGanhas;
 
             tocarSom("sounds/win.mp3");
@@ -514,7 +509,7 @@ function tratarCliqueLetra(letra, btnElement) {
                 desabilitarTodasLetras();
                 exibirModal(
                     `🎉 Palavra: ${palavra} - Nível COMPLETO!`,
-                    `💰 +${moedasGanhas} moedas (Combo x${estado.combo})`,
+                    `💰 +${moedasGanhas} moedas`,
                     "Continuar",
                     () => {
                         modalOverlay.classList.remove('active');
@@ -524,7 +519,7 @@ function tratarCliqueLetra(letra, btnElement) {
             } else {
                 exibirModal(
                     `🎉 Palavra: ${palavra}`,
-                    `💰 +${moedasGanhas} moedas (Combo x${estado.combo})`,
+                    `💰 +${moedasGanhas} moedas`,
                     "Próxima Palavra",
                     () => {
                         modalOverlay.classList.remove('active');
@@ -667,6 +662,8 @@ function atualizarBotoesLoja() {
         let preco = 0;
         if (item === "vida") preco = 100;
         else if (item === "revelar") preco = 80;
+        else if (item === "trocar") preco = 75;
+        else if (item === "remover") preco = 25;
         btn.disabled = estado.moedas < preco;
     });
 }
@@ -674,6 +671,8 @@ function comprarItem(item) {
     let preco = 0;
     if (item === "vida") preco = 100;
     else if (item === "revelar") preco = 80;
+    else if (item === "trocar") preco = 75;
+    else if (item === "remover") preco = 25;
 
     if (estado.moedas < preco) {
         alert("Moedas insuficientes!");
@@ -742,11 +741,12 @@ function comprarItem(item) {
                 if (idxPalavra !== -1 && !estado.palavrasAcertadasNivel[estado.nivelAtual].includes(idxPalavra)) {
                     estado.palavrasAcertadasNivel[estado.nivelAtual].push(idxPalavra);
                 }
-                estado.moedas += 10;
+                // GANHO FIXO DE 25 MOEDAS (mesmo ao revelar)
+                const moedasGanhas = 25;
+                estado.moedas += moedasGanhas;
                 tocarSom("sounds/win.mp3");
                 const total = nivel.palavras.length;
                 const acertadas = estado.palavrasAcertadasNivel[estado.nivelAtual].length;
-                // Fecha a loja e exibe o modal
                 fecharLojaFn();
                 if (acertadas === total) {
                     salvarDados();
@@ -754,7 +754,7 @@ function comprarItem(item) {
                     desabilitarTodasLetras();
                     exibirModal(
                         `Palavra: ${palavra} (revelada) - Nível COMPLETO!`,
-                        `+10 moedas`,
+                        `+${moedasGanhas} moedas`,
                         "Continuar",
                         () => {
                             modalOverlay.classList.remove('active');
@@ -764,7 +764,7 @@ function comprarItem(item) {
                 } else {
                     exibirModal(
                         `Palavra: ${palavra} (revelada)`,
-                        `+10 moedas`,
+                        `+${moedasGanhas} moedas`,
                         "Próxima Palavra",
                         () => {
                             modalOverlay.classList.remove('active');
@@ -776,8 +776,7 @@ function comprarItem(item) {
                 salvarDados();
                 atualizarMoedasUI();
                 verificarConquistas();
-                // Já fechamos a loja e mostramos o modal, então retornamos sem mostrar toast extra.
-                return;
+                return; // já fechou a loja e mostrou o modal
             }
         } else {
             alert("Não há letras para revelar!");
@@ -787,14 +786,82 @@ function comprarItem(item) {
             atualizarBotoesLoja();
             return;
         }
+    } else if (item === "trocar") {
+        // Trocar a palavra atual por outra do mesmo nível que ainda não foi usada
+        const nivel = niveis[estado.nivelAtual];
+        const totalPalavras = nivel.palavras.length;
+        const usadas = estado.palavrasUsadasNivel[estado.nivelAtual] || [];
+        const disponiveis = [];
+        for (let i = 0; i < totalPalavras; i++) {
+            if (!usadas.includes(i)) {
+                disponiveis.push(i);
+            }
+        }
+        // Remove a palavra atual do conjunto de disponíveis (se ainda estiver) para não trocar pela mesma
+        const idxAtual = nivel.palavras.findIndex(p => p.palavra === estado.palavraAtual);
+        if (idxAtual !== -1 && usadas.includes(idxAtual)) {
+            // Se a palavra atual já foi usada, não está mais disponível, então não precisa remover
+        }
+        // Filtra disponíveis removendo a atual (caso ela esteja lá acidentalmente)
+        const disponiveisSemAtual = disponiveis.filter(i => i !== idxAtual);
+        if (disponiveisSemAtual.length === 0) {
+            alert("Não há outra palavra disponível para trocar neste nível!");
+            estado.moedas += preco;
+            salvarDados();
+            atualizarMoedasUI();
+            atualizarBotoesLoja();
+            return;
+        }
+        const novoIdx = disponiveisSemAtual[Math.floor(Math.random() * disponiveisSemAtual.length)];
+        const novoItem = nivel.palavras[novoIdx];
+        // Remove a palavra atual das usadas? Não, pois a palavra atual ainda não foi concluída, então não deve ser marcada como usada.
+        // Apenas substituímos a palavra atual pela nova, sem adicionar a antiga às usadas.
+        // Mas precisamos garantir que a nova palavra não seja a mesma.
+        estado.palavraAtual = novoItem.palavra.toUpperCase();
+        estado.dicaAtual = novoItem.dica;
+        estado.letrasDescobertas = estado.palavraAtual.split('').map(c => c === ' ');
+        estado.letrasClicadas = new Set();
+        estado.jogoFinalizado = false;
+        // Não alteramos vidas nem erros
+        renderizarDica();
+        renderizarSlots();
+        renderizarAlfabeto();
+        compraRealizada = true;
+        mensagemToast = "Palavra trocada! 🔄";
+    } else if (item === "remover") {
+        // Remove automaticamente uma letra errada (que não está na palavra) e que ainda não foi clicada
+        const palavra = estado.palavraAtual;
+        const letrasPossiveis = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+        const letrasErradas = letrasPossiveis.filter(letra => {
+            const baseLetra = normalizar(letra);
+            return !palavra.split('').some(c => normalizar(c) === baseLetra) && !estado.letrasClicadas.has(letra);
+        });
+        if (letrasErradas.length === 0) {
+            alert("Não há letras erradas disponíveis para remover!");
+            estado.moedas += preco;
+            salvarDados();
+            atualizarMoedasUI();
+            atualizarBotoesLoja();
+            return;
+        }
+        const letraEscolhida = letrasErradas[Math.floor(Math.random() * letrasErradas.length)];
+        estado.letrasClicadas.add(letraEscolhida);
+        // Desabilitar o botão correspondente
+        const botoes = alfabetoContainer.querySelectorAll(".letra-btn");
+        botoes.forEach(btn => {
+            if (btn.dataset.letra === letraEscolhida) {
+                btn.disabled = true;
+                btn.classList.add("errada");
+            }
+        });
+        compraRealizada = true;
+        mensagemToast = `Letra "${letraEscolhida}" removida! ❌`;
     }
 
-    // Se chegou aqui, a compra foi realizada com sucesso (exceto se já retornou no caso de revelar completa)
     if (compraRealizada) {
         salvarDados();
         atualizarMoedasUI();
         atualizarBotoesLoja();
-        // Fechar a loja e mostrar toast
         fecharLojaFn();
         mostrarToast(mensagemToast);
     }
