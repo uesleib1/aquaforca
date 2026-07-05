@@ -236,53 +236,58 @@ btnVoltarInicio.addEventListener('click', () => {
 });
 
 // ============================================================
-// 9. INICIALIZAÇÃO DO JOGO
+// 9. INICIALIZAÇÃO DO JOGO (COM NOVA LÓGICA DE PROGRESSÃO)
 // ============================================================
 function iniciarJogo() {
     modalOverlay.classList.remove('active');
 
     const nivel = niveis[estado.nivelAtual];
     const totalPalavras = nivel.palavras.length;
-    const acertadas = estado.palavrasAcertadasNivel[estado.nivelAtual] || [];
     const usadas = estado.palavrasUsadasNivel[estado.nivelAtual] || [];
+    const acertadas = estado.palavrasAcertadasNivel[estado.nivelAtual] || [];
 
-    if (acertadas.length === totalPalavras) {
-        if (estado.nivelAtual === niveis.length - 1) {
-            exibirModal(
-                "🎉 PARABÉNS! Você completou todos os níveis! 🎉",
-                "🏆 Você é um verdadeiro mestre das águas!",
-                "🔄 Recomeçar Jogo",
-                () => {
-                    modalOverlay.classList.remove('active');
-                    reiniciarProgressoCompleto();
-                }
-            );
-            return;
-        } else {
-            estado.nivelAtual++;
-            if (!estado.palavrasAcertadasNivel[estado.nivelAtual]) {
-                estado.palavrasAcertadasNivel[estado.nivelAtual] = [];
-            }
-            if (!estado.palavrasUsadasNivel[estado.nivelAtual]) {
+    // ------------------------------------------------------------
+    // NOVA LÓGICA: Se todas as palavras do nível atual já foram usadas,
+    // e o jogador ainda tem erros permitidos, então avança de nível
+    // (ou finaliza se for o último nível).
+    // ------------------------------------------------------------
+    if (usadas.length === totalPalavras) {
+        // Se ainda tem erros permitidos, avança ou finaliza
+        if (estado.errosPermitidos > 0) {
+            if (estado.nivelAtual === niveis.length - 1) {
+                // Último nível concluído com sucesso!
+                exibirModal(
+                    "🎉 PARABÉNS! Você completou todos os níveis! 🎉",
+                    "🏆 Você é um verdadeiro mestre das águas!",
+                    "🔄 Recomeçar Jogo",
+                    () => {
+                        modalOverlay.classList.remove('active');
+                        reiniciarProgressoCompleto();
+                    }
+                );
+                return;
+            } else {
+                // Avança para o próximo nível
+                estado.nivelAtual++;
+                // Garante que as listas do novo nível estejam vazias
                 estado.palavrasUsadasNivel[estado.nivelAtual] = [];
+                estado.palavrasAcertadasNivel[estado.nivelAtual] = [];
+                // Não resetamos estado.errosPermitidos – eles são globais
+                atualizarNivelUI();
+                atualizarErrosUI();
+                salvarDados();
+                // Chama novamente para pegar a primeira palavra do novo nível
+                iniciarJogo();
+                return;
             }
-            estado.errosPermitidos = 3;
-            atualizarNivelUI();
-            atualizarErrosUI();
-            salvarDados();
-            exibirModal(
-                `⭐ Nível ${estado.nivelAtual+1} desbloqueado!`,
-                "Prepare-se para novos desafios!",
-                "Continuar",
-                () => {
-                    modalOverlay.classList.remove('active');
-                    iniciarJogo();
-                }
-            );
+        } else {
+            // Não deveria ocorrer, mas se errosPermitidos <= 0, recomeça
+            reiniciarProgressoCompleto();
             return;
         }
     }
 
+    // Se ainda há palavras disponíveis, escolhe uma aleatória entre as não usadas
     const disponiveis = [];
     for (let i = 0; i < totalPalavras; i++) {
         if (!usadas.includes(i)) {
@@ -290,22 +295,16 @@ function iniciarJogo() {
         }
     }
 
+    // Se não houver disponíveis (caso raro), recomeça
     if (disponiveis.length === 0) {
-        exibirModal(
-            "😢 Você usou todas as palavras do nível sem acertar todas!",
-            "Recomece do nível 1 e tente novamente.",
-            "Recomeçar do Nível 1",
-            () => {
-                modalOverlay.classList.remove('active');
-                reiniciarProgressoCompleto();
-            }
-        );
+        reiniciarProgressoCompleto();
         return;
     }
 
     const idx = disponiveis[Math.floor(Math.random() * disponiveis.length)];
     const item = nivel.palavras[idx];
 
+    // Marca a palavra como usada neste nível
     estado.palavrasUsadasNivel[estado.nivelAtual].push(idx);
     estado.palavraAtual = item.palavra.toUpperCase();
     estado.dicaAtual = item.dica;
@@ -501,32 +500,17 @@ function tratarCliqueLetra(letra, btnElement) {
             tocarSom("sounds/win.mp3");
             mostrarCombo(estado.combo);
 
-            const total = nivel.palavras.length;
-            const acertadas = estado.palavrasAcertadasNivel[estado.nivelAtual].length;
-            if (acertadas === total) {
-                salvarDados();
-                atualizarMoedasUI();
-                desabilitarTodasLetras();
-                exibirModal(
-                    `🎉 Palavra: ${palavra} - Nível COMPLETO!`,
-                    `💰 +${moedasGanhas} moedas`,
-                    "Continuar",
-                    () => {
-                        modalOverlay.classList.remove('active');
-                        iniciarJogo();
-                    }
-                );
-            } else {
-                exibirModal(
-                    `🎉 Palavra: ${palavra}`,
-                    `💰 +${moedasGanhas} moedas`,
-                    "Próxima Palavra",
-                    () => {
-                        modalOverlay.classList.remove('active');
-                        iniciarJogo();
-                    }
-                );
-            }
+            // Agora sempre exibe o modal com "Próxima Palavra",
+            // pois a progressão de nível é decidida em iniciarJogo()
+            exibirModal(
+                `🎉 Palavra: ${palavra}`,
+                `💰 +${moedasGanhas} moedas`,
+                "Próxima Palavra",
+                () => {
+                    modalOverlay.classList.remove('active');
+                    iniciarJogo();
+                }
+            );
 
             verificarConquistas();
             salvarDados();
@@ -641,6 +625,7 @@ function reiniciarProgressoCompleto() {
     estado.combo = 0;
     estado.totalAcertos = 0;
     estado.totalErros = 0;
+    // Não resetamos moedas – elas permanecem
     salvarDados();
     iniciarJogo();
 }
@@ -745,33 +730,16 @@ function comprarItem(item) {
                 const moedasGanhas = 25;
                 estado.moedas += moedasGanhas;
                 tocarSom("sounds/win.mp3");
-                const total = nivel.palavras.length;
-                const acertadas = estado.palavrasAcertadasNivel[estado.nivelAtual].length;
                 fecharLojaFn();
-                if (acertadas === total) {
-                    salvarDados();
-                    atualizarMoedasUI();
-                    desabilitarTodasLetras();
-                    exibirModal(
-                        `Palavra: ${palavra} (revelada) - Nível COMPLETO!`,
-                        `+${moedasGanhas} moedas`,
-                        "Continuar",
-                        () => {
-                            modalOverlay.classList.remove('active');
-                            iniciarJogo();
-                        }
-                    );
-                } else {
-                    exibirModal(
-                        `Palavra: ${palavra} (revelada)`,
-                        `+${moedasGanhas} moedas`,
-                        "Próxima Palavra",
-                        () => {
-                            modalOverlay.classList.remove('active');
-                            iniciarJogo();
-                        }
-                    );
-                }
+                exibirModal(
+                    `Palavra: ${palavra} (revelada)`,
+                    `+${moedasGanhas} moedas`,
+                    "Próxima Palavra",
+                    () => {
+                        modalOverlay.classList.remove('active');
+                        iniciarJogo();
+                    }
+                );
                 desabilitarTodasLetras();
                 salvarDados();
                 atualizarMoedasUI();
@@ -797,12 +765,7 @@ function comprarItem(item) {
                 disponiveis.push(i);
             }
         }
-        // Remove a palavra atual do conjunto de disponíveis (se ainda estiver) para não trocar pela mesma
         const idxAtual = nivel.palavras.findIndex(p => p.palavra === estado.palavraAtual);
-        if (idxAtual !== -1 && usadas.includes(idxAtual)) {
-            // Se a palavra atual já foi usada, não está mais disponível, então não precisa remover
-        }
-        // Filtra disponíveis removendo a atual (caso ela esteja lá acidentalmente)
         const disponiveisSemAtual = disponiveis.filter(i => i !== idxAtual);
         if (disponiveisSemAtual.length === 0) {
             alert("Não há outra palavra disponível para trocar neste nível!");
@@ -814,15 +777,11 @@ function comprarItem(item) {
         }
         const novoIdx = disponiveisSemAtual[Math.floor(Math.random() * disponiveisSemAtual.length)];
         const novoItem = nivel.palavras[novoIdx];
-        // Remove a palavra atual das usadas? Não, pois a palavra atual ainda não foi concluída, então não deve ser marcada como usada.
-        // Apenas substituímos a palavra atual pela nova, sem adicionar a antiga às usadas.
-        // Mas precisamos garantir que a nova palavra não seja a mesma.
         estado.palavraAtual = novoItem.palavra.toUpperCase();
         estado.dicaAtual = novoItem.dica;
         estado.letrasDescobertas = estado.palavraAtual.split('').map(c => c === ' ');
         estado.letrasClicadas = new Set();
         estado.jogoFinalizado = false;
-        // Não alteramos vidas nem erros
         renderizarDica();
         renderizarSlots();
         renderizarAlfabeto();
@@ -846,7 +805,6 @@ function comprarItem(item) {
         }
         const letraEscolhida = letrasErradas[Math.floor(Math.random() * letrasErradas.length)];
         estado.letrasClicadas.add(letraEscolhida);
-        // Desabilitar o botão correspondente
         const botoes = alfabetoContainer.querySelectorAll(".letra-btn");
         botoes.forEach(btn => {
             if (btn.dataset.letra === letraEscolhida) {
