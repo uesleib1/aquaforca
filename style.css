@@ -1033,3 +1033,40 @@ body {
         padding: 20px 12px;
     }
 }
+
+.loja-item {
+    display: grid;
+    grid-template-columns: 1fr auto;    /* nome | preço */
+    grid-template-rows: auto auto;      /* linha 1: info, linha 2: botão */
+    gap: 8px 12px;                      /* espaçamento vertical e horizontal */
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 14px 18px;
+    margin: 10px 0;
+    color: #fff;
+    font-weight: 600;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(4px);
+}
+
+/* Coloca o primeiro span (nome) na coluna 1, linha 1 */
+.loja-item span:first-child {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+/* Coloca o segundo span (preço) na coluna 2, linha 1, alinhado à direita */
+.loja-item span:last-child {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: right;
+}
+
+/* O botão ocupa as duas colunas na linha 2 e fica alinhado à esquerda */
+.comprar-btn {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    justify-self: start;   /* alinha à esquerda */
+    /* mantenha as demais propriedades já existentes */
+}
