@@ -855,7 +855,7 @@ function comprarItem(item) {
             }
         });
         compraRealizada = true;
-        mensagemToast = `Letra "${letraEscolhida}" removida! ❌`;
+        mensagemToast = `Letra "${letraEscolhida}" removida!`;
     }
 
     if (compraRealizada) {
