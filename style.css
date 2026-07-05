@@ -810,6 +810,44 @@ body {
 }
 
 /* ============================================================
+   TOAST DE CONFIRMAÇÃO DA LOJA
+   ============================================================ */
+.toast-notificacao {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: rgba(67, 181, 129, 0.95);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 2001;
+    max-width: 90vw;
+    pointer-events: none;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0;
+}
+
+.toast-notificacao.ativo {
+    display: block;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-notificacao span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ============================================================
    BOTÃO DO MODAL (jogar novamente)
    ============================================================ */
 #modal-jogar-novamente {

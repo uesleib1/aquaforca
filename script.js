@@ -120,6 +120,8 @@ const comboFlutuante = document.getElementById("combo-flutuante");
 const notificacaoConquista = document.getElementById("notificacao-conquista");
 const notificacaoTexto = document.getElementById("notificacao-texto");
 const errosContador = document.getElementById("erros-contador");
+const toastNotificacao = document.getElementById("toast-notificacao");
+const toastTexto = document.getElementById("toast-texto");
 
 const btnLojaHeader = document.getElementById("btn-loja-header");
 const btnVoltarInicio = document.getElementById("btn-voltar-inicio");
@@ -436,6 +438,24 @@ function mostrarNotificacaoConquista(nome) {
 }
 
 // ============================================================
+// 12.1 TOAST DE CONFIRMAÇÃO DA LOJA
+// ============================================================
+let timeoutToast = null;
+function mostrarToast(mensagem) {
+    toastTexto.innerHTML = `✅ ${mensagem}`;
+    toastNotificacao.style.display = 'block';
+    void toastNotificacao.offsetWidth;
+    toastNotificacao.classList.add('ativo');
+    clearTimeout(timeoutToast);
+    timeoutToast = setTimeout(() => {
+        toastNotificacao.classList.remove('ativo');
+        setTimeout(() => {
+            toastNotificacao.style.display = 'none';
+        }, 500);
+    }, 2500);
+}
+
+// ============================================================
 // 13. LÓGICA DE CLIQUE EM LETRA
 // ============================================================
 function tratarCliqueLetra(letra, btnElement) {
@@ -631,7 +651,7 @@ function reiniciarProgressoCompleto() {
 }
 
 // ============================================================
-// 17. LOJA
+// 17. LOJA (COM FECHAMENTO AUTOMÁTICO E TOAST)
 // ============================================================
 function abrirLoja() {
     lojaOverlay.classList.add('active');
@@ -661,18 +681,25 @@ function comprarItem(item) {
     }
 
     estado.moedas -= preco;
+    let compraRealizada = false;
+    let mensagemToast = "";
+
     if (item === "vida") {
         if (estado.vidas < estado.totalVidas) {
             estado.vidas++;
             renderizarVidas();
+            compraRealizada = true;
+            mensagemToast = "Vida extra comprada!";
         } else {
             if (estado.totalVidas < 7) {
                 estado.totalVidas++;
                 estado.vidas++;
                 renderizarVidas();
+                compraRealizada = true;
+                mensagemToast = "Vida extra comprada!";
             } else {
                 alert("Você já tem o máximo de vidas!");
-                estado.moedas += preco;
+                estado.moedas += preco; // devolve as moedas
                 salvarDados();
                 atualizarMoedasUI();
                 atualizarBotoesLoja();
@@ -703,6 +730,9 @@ function comprarItem(item) {
                     btn.classList.add("certa");
                 }
             });
+            compraRealizada = true;
+            mensagemToast = `Letra "${baseLetra}" revelada!`;
+
             if (estado.letrasDescobertas.every(v => v === true)) {
                 estado.jogoFinalizado = true;
                 estado.totalPalavrasResolvidas++;
@@ -716,13 +746,15 @@ function comprarItem(item) {
                 tocarSom("sounds/win.mp3");
                 const total = nivel.palavras.length;
                 const acertadas = estado.palavrasAcertadasNivel[estado.nivelAtual].length;
+                // Fecha a loja e exibe o modal
+                fecharLojaFn();
                 if (acertadas === total) {
                     salvarDados();
                     atualizarMoedasUI();
                     desabilitarTodasLetras();
                     exibirModal(
-                        `🎉 Palavra: ${palavra} (revelada) - Nível COMPLETO!`,
-                        `💰 +10 moedas`,
+                        `Palavra: ${palavra} (revelada) - Nível COMPLETO!`,
+                        `+10 moedas`,
                         "Continuar",
                         () => {
                             modalOverlay.classList.remove('active');
@@ -731,8 +763,8 @@ function comprarItem(item) {
                     );
                 } else {
                     exibirModal(
-                        `🎉 Palavra: ${palavra} (revelada)`,
-                        `💰 +10 moedas`,
+                        `Palavra: ${palavra} (revelada)`,
+                        `+10 moedas`,
                         "Próxima Palavra",
                         () => {
                             modalOverlay.classList.remove('active');
@@ -744,6 +776,8 @@ function comprarItem(item) {
                 salvarDados();
                 atualizarMoedasUI();
                 verificarConquistas();
+                // Já fechamos a loja e mostramos o modal, então retornamos sem mostrar toast extra.
+                return;
             }
         } else {
             alert("Não há letras para revelar!");
@@ -755,9 +789,15 @@ function comprarItem(item) {
         }
     }
 
-    salvarDados();
-    atualizarMoedasUI();
-    atualizarBotoesLoja();
+    // Se chegou aqui, a compra foi realizada com sucesso (exceto se já retornou no caso de revelar completa)
+    if (compraRealizada) {
+        salvarDados();
+        atualizarMoedasUI();
+        atualizarBotoesLoja();
+        // Fechar a loja e mostrar toast
+        fecharLojaFn();
+        mostrarToast(mensagemToast);
+    }
 }
 
 lojaItens.addEventListener("click", (e) => {

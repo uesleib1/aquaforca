@@ -113,10 +113,10 @@
         <div class="modal-content glass" style="max-width:550px; text-align:left;">
             <h2 style="color:#fff; font-family:'Fredoka One',cursive; text-align:center;">Como jogar?</h2>
             <div style="color:#fff; font-size:clamp(1rem, 3vw, 1.1rem); line-height:1.7; padding:5px 0;">
-                <p><strong>Objetivo:</strong> Descobrir a palavra secreta sobre ciência aquática.</p>
+                <p><strong>Objetivo:</strong> Descobrir a palavra escondida.</p>
                 <p><strong>Progressão:</strong></p>
                 <ul style="padding-left:20px; list-style-type:'• ';">
-                    <li>Para avançar de nível, você precisa <strong>acertar todas</strong> as palavras do nível atual.</li>
+                    <li>Para avançar de nível, você precisa <strong>acertar</strong> as palavras do nível atual.</li>
                 </ul>
                 <p><strong>Erros permitidos:</strong></p>
                 <ul style="padding-left:20px; list-style-type:'• ';">
@@ -124,7 +124,7 @@
                     <li>Se perder uma palavra (esgotar as vidas), um erro é contado.</li>
                     <li>Ao atingir 0 erros restantes, o jogo acaba e você <strong>recomeça do nível 1</strong>.</li>
                 </ul>
-                <p>Use a dica para ajudar, compre vidas extras ou revele letras na loja com as moedas ganhas.</p>
+                <p>Use a loja para te ajudar, compre vida extra ou revele uma letra.</p>
             </div>
             <button id="fechar-instrucoes" class="fechar-modal-btn" style="display:block; margin:20px auto 0;">Entendi!</button>
         </div>
@@ -171,6 +171,11 @@
     <!-- NOTIFICAÇÃO de conquista -->
     <div id="notificacao-conquista" class="notificacao-conquista">
         <span id="notificacao-texto"></span>
+    </div>
+
+    <!-- TOAST de confirmação da loja -->
+    <div id="toast-notificacao" class="toast-notificacao">
+        <span id="toast-texto"></span>
     </div>
 
     <script src="script.js"></script>
