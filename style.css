@@ -134,179 +134,461 @@ body {
     background: rgba(255,255,255,0.5);
 }
 
-/* ===== HEADER DO JOGO ===== */
+/* ============================================================= */
+/*  🔥 NOVO HUD - BARRA SUPERIOR UNIFICADA                        */
+/* ============================================================= */
+
 .game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 2px 12px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
-    flex-wrap: wrap;
-    gap: 8px;
+    padding: 4px 0 12px;
     margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.header-esquerda {
+.hud-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: clamp(6px, 1.5vw, 12px);
     flex-wrap: wrap;
+    padding: 2px 0;
 }
 
-.header-centro {
-    display: flex;
-    align-items: center;
-}
-
-.header-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-/* ----- MOEDAS ----- */
-.moedas-display {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: linear-gradient(135deg, #2d3436, #1a1a1a);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    padding: 4px 14px;
-    border-radius: 40px;
-    font-size: clamp(1rem, 4vw, 1.5rem);
-    font-weight: 800;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.moedas-display span:first-child {
-    color: #ffd700;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-}
-
-.moedas-display span:last-child {
-    color: #fff;
-    font-size: clamp(1.2rem, 5vw, 1.8rem);
-    font-weight: 900;
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
-}
-
-/* ----- NÍVEL ----- */
-.nivel-display {
+/* ===== CARDS DO HUD ===== */
+.hud-card {
     position: relative;
-    background: linear-gradient(135deg, #00b4db, #0083b0);
-    border: none;
-    border-radius: 40px;
-    padding: 4px 14px 4px 30px;
-    font-size: clamp(0.9rem, 3.5vw, 1.2rem);
-    font-weight: 800;
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 180, 219, 0.4);
-    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: clamp(62px, 16vw, 82px);
+    height: clamp(78px, 20vw, 100px);
+    border-radius: 20px;
+    padding: 8px 6px 6px;
+    cursor: default;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease;
+    overflow: hidden;
+    background: rgba(10, 40, 60, 0.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.nivel-display::before {
-    content: "🌟";
+.hud-card:hover {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.hud-card:active {
+    transform: translateY(2px) scale(0.96);
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -1px 4px rgba(0, 0, 0, 0.15);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* ===== EFEITO SHINE ===== */
+.hud-card__shine {
     position: absolute;
-    left: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    top: -60%;
+    left: -60%;
+    width: 60%;
+    height: 220%;
+    background: linear-gradient(
+        105deg,
+        transparent 35%,
+        rgba(255, 255, 255, 0.25) 42%,
+        rgba(255, 255, 255, 0.45) 45%,
+        rgba(255, 255, 255, 0.25) 48%,
+        transparent 55%
+    );
+    transform: rotate(30deg);
+    animation: hudShine 4.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 2;
 }
 
-.nivel-display span {
-    color: #ffe066;
-    font-size: clamp(1rem, 4vw, 1.4rem);
+@keyframes hudShine {
+    0%   { left: -60%; opacity: 0; }
+    8%   { opacity: 1; }
+    40%  { left: 120%; opacity: 1; }
+    48%  { opacity: 0; }
+    100% { left: 120%; opacity: 0; }
 }
 
-/* ----- ERROS PERMITIDOS ----- */
-.erros-display {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-    border: none;
-    border-radius: 40px;
-    padding: 4px 16px;
-    font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+/* ===== ÍCONE DO CARD ===== */
+.hud-card__icon {
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    line-height: 1;
+    margin-bottom: 2px;
+    z-index: 3;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+    transition: transform 0.3s ease;
+}
+
+.hud-card:hover .hud-card__icon {
+    transform: scale(1.15);
+}
+
+/* ===== VALOR (número grande) ===== */
+.hud-card__value {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.4rem, 5vw, 1.9rem);
+    font-weight: 900;
+    line-height: 1;
+    z-index: 3;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.hud-card:hover .hud-card__value {
+    transform: scale(1.08);
+}
+
+/* ===== LABEL (texto pequeno) ===== */
+.hud-card__label {
+    font-size: clamp(0.5rem, 1.8vw, 0.6rem);
     font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    z-index: 3;
+    margin-top: 1px;
+    transition: opacity 0.3s ease;
+}
+
+.hud-card:hover .hud-card__label {
+    opacity: 1;
+}
+
+/* ============================================ */
+/*  VARIANTE DOURADA - MOEDAS                   */
+/* ============================================ */
+.hud-card--gold {
+    background: linear-gradient(
+        180deg,
+        rgba(180, 130, 20, 0.75) 0%,
+        rgba(160, 110, 10, 0.7) 40%,
+        rgba(120, 80, 5, 0.6) 100%
+    );
+    border-color: rgba(255, 215, 0, 0.6);
+    box-shadow:
+        0 4px 20px rgba(180, 120, 20, 0.4),
+        0 0 30px rgba(255, 200, 40, 0.2),
+        inset 0 1px 0 rgba(255, 255, 200, 0.5),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.hud-card--gold .hud-card__value {
     color: #fff;
-    box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4);
-    transition: all 0.3s ease;
+    text-shadow:
+        0 0 14px rgba(255, 200, 50, 0.9),
+        0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
-.erros-display span:last-child {
-    font-size: clamp(1.2rem, 5vw, 1.6rem);
-    color: #fff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+.hud-card--gold .hud-card__label {
+    color: #ffe9a0;
 }
 
-.erros-display.critico {
-    animation: pulseErro 0.8s infinite alternate;
+.hud-card--gold:hover {
+    box-shadow:
+        0 10px 32px rgba(180, 120, 20, 0.5),
+        0 0 50px rgba(255, 200, 40, 0.35),
+        inset 0 1px 0 rgba(255, 255, 200, 0.6),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
 }
 
-@keyframes pulseErro {
-    0% { transform: scale(1); box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4); }
-    100% { transform: scale(1.05); box-shadow: 0 4px 30px rgba(238, 90, 36, 0.8); }
-}
-
-/* ----- BOTÕES DO HEADER ----- */
-.header-btn {
-    position: relative;
-    width: clamp(38px, 10vw, 48px);
-    height: clamp(38px, 10vw, 48px);
-    border: none;
+/* Brilho extra nas moedas */
+.hud-card--gold::after {
+    content: '';
+    position: absolute;
+    top: 8%;
+    left: 15%;
+    width: 30%;
+    height: 20%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, transparent 70%);
     border-radius: 50%;
-    font-size: clamp(1.2rem, 4vw, 1.6rem);
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1;
+    pointer-events: none;
+    animation: goldSparkle 3s ease-in-out infinite;
+}
+
+@keyframes goldSparkle {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.3); }
+}
+
+/* ============================================ */
+/*  VARIANTE AZUL - NÍVEL                       */
+/* ============================================ */
+.hud-card--blue {
+    background: linear-gradient(
+        180deg,
+        rgba(0, 100, 160, 0.75) 0%,
+        rgba(0, 80, 140, 0.7) 40%,
+        rgba(0, 50, 100, 0.6) 100%
+    );
+    border-color: rgba(100, 200, 255, 0.55);
+    box-shadow:
+        0 4px 20px rgba(0, 120, 180, 0.35),
+        0 0 30px rgba(0, 160, 220, 0.15),
+        inset 0 1px 0 rgba(200, 240, 255, 0.45),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.hud-card--blue .hud-card__value {
+    color: #fff;
+    text-shadow:
+        0 0 14px rgba(100, 210, 255, 0.9),
+        0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.hud-card--blue .hud-card__label {
+    color: #b8e8ff;
+}
+
+.hud-card--blue:hover {
+    box-shadow:
+        0 10px 32px rgba(0, 120, 180, 0.5),
+        0 0 50px rgba(0, 160, 220, 0.35),
+        inset 0 1px 0 rgba(200, 240, 255, 0.55),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* ============================================ */
+/*  VARIANTE SEGURA (VERDE) - ERROS             */
+/* ============================================ */
+.hud-card--safe {
+    background: linear-gradient(
+        180deg,
+        rgba(30, 120, 70, 0.75) 0%,
+        rgba(20, 100, 55, 0.7) 40%,
+        rgba(10, 70, 35, 0.6) 100%
+    );
+    border-color: rgba(80, 200, 130, 0.55);
+    box-shadow:
+        0 4px 20px rgba(30, 140, 70, 0.35),
+        0 0 30px rgba(40, 180, 100, 0.15),
+        inset 0 1px 0 rgba(200, 255, 220, 0.45),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
+    transition: background 0.5s ease,
+                border-color 0.5s ease,
+                box-shadow 0.5s ease,
+                transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hud-card--safe .hud-card__value {
+    color: #fff;
+    text-shadow:
+        0 0 14px rgba(80, 220, 140, 0.9),
+        0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.hud-card--safe .hud-card__label {
+    color: #b8f0d0;
+}
+
+.hud-card--safe:hover {
+    box-shadow:
+        0 10px 32px rgba(30, 140, 70, 0.5),
+        0 0 50px rgba(40, 180, 100, 0.35),
+        inset 0 1px 0 rgba(200, 255, 220, 0.55),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* ============================================ */
+/*  ESTADO CRÍTICO (VERMELHO) - ERROS           */
+/* ============================================ */
+.hud-card.critico {
+    background: linear-gradient(
+        180deg,
+        rgba(200, 30, 40, 0.85) 0%,
+        rgba(170, 20, 30, 0.8) 40%,
+        rgba(130, 10, 20, 0.7) 100%
+    ) !important;
+    border-color: rgba(255, 120, 130, 0.7) !important;
+    box-shadow:
+        0 4px 22px rgba(220, 40, 50, 0.5),
+        0 0 40px rgba(255, 60, 70, 0.3),
+        inset 0 1px 0 rgba(255, 200, 200, 0.5),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.3) !important;
+    animation: pulseCritico 0.9s ease-in-out infinite;
+}
+
+.hud-card.critico .hud-card__value {
+    text-shadow:
+        0 0 18px rgba(255, 100, 110, 1),
+        0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.hud-card.critico .hud-card__label {
+    color: #ffc8cc;
+}
+
+.hud-card.critico .hud-card__icon {
+    animation: shakeIcon 0.6s ease-in-out infinite;
+}
+
+@keyframes pulseCritico {
+    0%, 100% {
+        box-shadow:
+            0 4px 22px rgba(220, 40, 50, 0.5),
+            0 0 40px rgba(255, 60, 70, 0.3),
+            inset 0 1px 0 rgba(255, 200, 200, 0.5),
+            inset 0 -2px 6px rgba(0, 0, 0, 0.3);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow:
+            0 6px 30px rgba(220, 40, 50, 0.7),
+            0 0 60px rgba(255, 60, 70, 0.5),
+            inset 0 1px 0 rgba(255, 200, 200, 0.6),
+            inset 0 -2px 6px rgba(0, 0, 0, 0.3);
+        transform: scale(1.04);
+    }
+}
+
+@keyframes shakeIcon {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-3px) rotate(-5deg); }
+    40% { transform: translateX(3px) rotate(5deg); }
+    60% { transform: translateX(-2px) rotate(-3deg); }
+    80% { transform: translateX(2px) rotate(3deg); }
+}
+
+/* ============================================ */
+/*  BOTÕES PREMIUM DO HUD                       */
+/* ============================================ */
+.hud-buttons {
+    display: flex;
+    gap: clamp(6px, 1.5vw, 10px);
+    align-items: center;
+}
+
+.hud-btn {
+    position: relative;
+    width: clamp(40px, 10vw, 50px);
+    height: clamp(40px, 10vw, 50px);
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    font-size: clamp(1.1rem, 3.5vw, 1.4rem);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.header-btn#btn-loja-header {
-    background: linear-gradient(135deg, #f9d423, #f7971e);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
     color: #fff;
-    border-color: #f7971e;
-    box-shadow: 0 4px 15px rgba(247, 151, 30, 0.4);
 }
 
-.header-btn#btn-loja-header:hover {
-    transform: scale(1.15) translateY(-3px);
-    box-shadow: 0 8px 25px rgba(247, 151, 30, 0.6);
+/* Botão dourado - Loja */
+.hud-btn--gold {
+    background: linear-gradient(135deg, #f9d423 0%, #f7971e 50%, #e67e00 100%);
+    box-shadow:
+        0 4px 14px rgba(247, 151, 30, 0.4),
+        0 0 20px rgba(255, 200, 40, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.header-btn#btn-voltar-inicio {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(6px);
-}
-
-.header-btn#btn-voltar-inicio:hover {
-    background: rgba(255, 255, 255, 0.35);
-    transform: scale(1.1) rotate(-5deg);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-.header-btn::after {
-    content: "";
+.hud-btn--gold::after {
+    content: '';
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
+    top: 12%;
+    left: 18%;
+    width: 35%;
+    height: 25%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 70%);
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s;
     pointer-events: none;
 }
 
-.header-btn:hover::after {
-    opacity: 1;
+.hud-btn--gold:hover {
+    transform: scale(1.18) rotate(-8deg);
+    box-shadow:
+        0 8px 28px rgba(247, 151, 30, 0.6),
+        0 0 40px rgba(255, 200, 40, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 200, 0.7);
+}
+
+.hud-btn--gold:active {
+    transform: scale(0.88) rotate(-4deg);
+    box-shadow:
+        0 2px 8px rgba(247, 151, 30, 0.5),
+        inset 0 2px 6px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.2);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* Botão azul - Menu */
+.hud-btn--blue {
+    background: linear-gradient(135deg, #5bc0eb 0%, #0099cc 50%, #0077aa 100%);
+    box-shadow:
+        0 4px 14px rgba(0, 153, 204, 0.4),
+        0 0 20px rgba(80, 200, 240, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hud-btn--blue::after {
+    content: '';
+    position: absolute;
+    top: 12%;
+    left: 18%;
+    width: 35%;
+    height: 25%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.hud-btn--blue:hover {
+    transform: scale(1.18) rotate(8deg);
+    box-shadow:
+        0 8px 28px rgba(0, 153, 204, 0.6),
+        0 0 40px rgba(80, 200, 240, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    border-color: rgba(200, 240, 255, 0.7);
+}
+
+.hud-btn--blue:active {
+    transform: scale(0.88) rotate(4deg);
+    box-shadow:
+        0 2px 8px rgba(0, 153, 204, 0.5),
+        inset 0 2px 6px rgba(0, 0, 0, 0.3),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.2);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* SVG nos botões */
+.hud-btn svg {
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.hud-btn:hover svg {
+    transform: scale(1.1);
+}
+
+.hud-btn:active svg {
+    transform: scale(0.9);
 }
 
 /* ===== DICA ===== */
@@ -697,33 +979,66 @@ body {
     box-shadow: 0 4px 0 #cc7a1f;
 }
 
-/* ===== RESPONSIVIDADE EXTRA ===== */
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 600px) {
+    .hud-container {
+        gap: 5px;
+    }
+    .hud-card {
+        width: clamp(50px, 18vw, 65px);
+        height: clamp(64px, 22vw, 80px);
+        border-radius: 16px;
+        padding: 6px 4px 4px;
+    }
+    .hud-card__icon {
+        font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    }
+    .hud-card__value {
+        font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+    }
+    .hud-card__label {
+        font-size: clamp(0.4rem, 1.5vw, 0.5rem);
+        letter-spacing: 0.06em;
+    }
+    .hud-btn {
+        width: clamp(34px, 9vw, 40px);
+        height: clamp(34px, 9vw, 40px);
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+    }
+    .hud-buttons {
+        gap: 4px;
+    }
+}
+
 @media (max-width: 480px) {
     .container {
         padding: 12px 10px 16px;
         border-radius: 28px;
     }
     .game-header {
-        gap: 6px;
         padding-bottom: 8px;
     }
-    .header-esquerda {
-        gap: 6px;
+    .hud-container {
+        gap: 4px;
     }
-    .moedas-display {
-        padding: 3px 10px;
+    .hud-card {
+        width: clamp(44px, 17vw, 56px);
+        height: clamp(56px, 20vw, 70px);
+        border-radius: 14px;
     }
-    .nivel-display {
-        padding: 3px 10px 3px 24px;
+    .hud-card__icon {
         font-size: 0.8rem;
     }
-    .nivel-display::before {
-        font-size: 0.8rem;
-        left: 4px;
+    .hud-card__value {
+        font-size: 1rem;
     }
-    .erros-display {
-        padding: 3px 12px;
-        font-size: 0.8rem;
+    .hud-card__label {
+        font-size: 0.4rem;
+    }
+    .hud-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
     }
     .slot {
         width: 30px;
@@ -752,6 +1067,32 @@ body {
 }
 
 @media (max-width: 380px) {
+    .hud-container {
+        gap: 3px;
+    }
+    .hud-card {
+        width: 40px;
+        height: 50px;
+        border-radius: 10px;
+        padding: 4px 3px 2px;
+    }
+    .hud-card__icon {
+        font-size: 0.7rem;
+        margin-bottom: 0;
+    }
+    .hud-card__value {
+        font-size: 0.85rem;
+    }
+    .hud-card__label {
+        font-size: 0.35rem;
+        letter-spacing: 0.04em;
+    }
+    .hud-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+        border-width: 1.5px;
+    }
     .slot {
         width: 26px;
         height: 36px;
@@ -767,25 +1108,5 @@ body {
     #vidas-container {
         font-size: 1.3rem;
     }
-    .header-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 1rem;
-    }
-    .moedas-display {
-        font-size: 0.8rem;
-        padding: 2px 8px;
-    }
-    .nivel-display {
-        font-size: 0.7rem;
-        padding: 2px 8px 2px 20px;
-    }
-    .nivel-display::before {
-        font-size: 0.7rem;
-        left: 3px;
-    }
-    .erros-display {
-        font-size: 0.7rem;
-        padding: 2px 10px;
-    }
 }
+

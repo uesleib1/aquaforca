@@ -38,26 +38,51 @@
         <div class="container glass">
             <!-- Header com moedas, nível, erros e botões -->
             <header class="game-header">
-                <div class="header-esquerda">
-                    <div class="moedas-display">
-                        <span>💰</span>
-                        <span id="moedas-contador">0</span>
-                    </div>
-                    <div class="nivel-display">
-                        <span>Nível <span id="nivel-atual">1</span></span>
-                    </div>
-                </div>
-                <div class="header-centro">
-                    <div class="erros-display" id="erros-display">
-                        <span>❌</span>
-                        <span id="erros-contador">3</span>
-                    </div>
-                </div>
-                <div class="header-buttons">
-                    <button id="btn-loja-header" class="header-btn" title="Loja">🏪</button>
-                    <button id="btn-voltar-inicio" class="header-btn" title="Início">🏠</button>
-                </div>
-            </header>
+    <div class="hud-container">
+        <!-- CARD MOEDAS -->
+        <div class="hud-card hud-card--gold" id="moedas-card">
+            <div class="hud-card__shine"></div>
+            <div class="hud-card__icon">💰</div>
+            <div class="hud-card__value" id="moedas-contador">0</div>
+            <div class="hud-card__label">MOEDAS</div>
+        </div>
+        <!-- CARD NÍVEL -->
+        <div class="hud-card hud-card--blue" id="nivel-card">
+            <div class="hud-card__shine"></div>
+            <div class="hud-card__icon"></div>
+            <div class="hud-card__value" id="nivel-atual">1</div>
+            <div class="hud-card__label">NÍVEL</div>
+        </div>
+        <!-- CARD ERROS -->
+        <div class="hud-card hud-card--safe" id="erros-display">
+            <div class="hud-card__shine"></div>
+            <div class="hud-card__icon"></div>
+            <div class="hud-card__value" id="erros-contador">3</div>
+            <div class="hud-card__label">ERROS</div>
+        </div>
+        <!-- BOTÕES -->
+        <div class="hud-buttons">
+            <button id="btn-loja-header" class="hud-btn hud-btn--gold" title="Loja">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Ícone de loja (fachada + sacola) -->
+        <path d="M3 9l1.5 10h15L21 9"/>
+        <path d="M3 9h18"/>
+        <path d="M9 9V5a3 3 0 0 1 6 0v4"/>
+        <circle cx="12" cy="15" r="1.5" fill="currentColor" stroke="none"/>
+    </svg>
+</button>
+
+<!-- Botão Início / Menu -->
+<button id="btn-voltar-inicio" class="hud-btn hud-btn--blue" title="Início">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Ícone de casa -->
+        <path d="M3 12l9-9 9 9"/>
+        <path d="M5 10v10h4v-5h6v5h4V10"/>
+    </svg>
+</button>
+        </div>
+    </div>
+</header>
 
             <!-- Dica -->
             <div id="dica-area" class="glass-light">
